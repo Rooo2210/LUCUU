@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minta PAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart 6s ease-in infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: containerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes containerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-size: 36px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            animation: titleBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .question {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 40px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            min-height: 60px;
+            align-items: center;
+        }
+        
+        #step1 .buttons {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        button {
+            padding: 18px 50px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-yes:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-no:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.5);
+        }
+
+        .number-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-width: 70px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .number-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .number-btn:active {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .thank-you {
+            animation: fadeInScale 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .emoji {
+            font-size: 80px;
+            margin-bottom: 25px;
+            animation: emojiSpin 1s ease-in-out;
+        }
+
+        @keyframes emojiSpin {
+            0% {
+                transform: rotate(0deg) scale(0);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .thank-message {
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin-bottom: 20px;
+            animation: thanksBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes thanksBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .sub-message {
+            font-size: 18px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkleFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkleFloat {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <div id="step1" class="step">
+            <h1>💌 Halooo Cantikkk!</h1>
+            <p class="question">Boleh minta PAP? tanktop sii kalo boleh EHEHEH🥺✨</p>
+            <div class="buttons">
+                <button class="btn-yes" id="yesBtn" onclick="goToStep2()">✨ Okayy gantengg ✨</button>
+                <button class="btn-no" id="noBtn" onclick="moveButton()">❌ G</button>
+            </div>
+        </div>
+
+        <div id="step2" class="step hidden">
+            <h1>📸 IHHH BAIKK BANGETT!!!</h1>
+            <p class="question">Mau ngasih berapa PAP kalo bole tauu? 🎁</p>
+            <div class="buttons">
+                <button class="number-btn" id="btn1" onclick="handleNumber(1)">1</button>
+                <button class="number-btn" id="btn2" onclick="handleNumber(2)">2</button>
+                <button class="number-btn" onclick="handleNumber(3)">3</button>
+                <button class="number-btn" onclick="handleNumber(4)">4</button>
+                <button class="number-btn" onclick="handleNumber(5)">5</button>
+            </div>
+        </div>
+
+        <div id="step3" class="step hidden thank-you">
+            <div class="emoji">🎉</div>
+            <p class="thank-message">MAKASII CANTIKK!</p>
+            <p class="sub-message">Ditunggu ya PAP nya~ 😊💕</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.getElementById('hearts').appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        setInterval(createHeart, 800);
+
+        function getRandomPosition() {
+            const container = document.querySelector('.container');
+            const btn = document.getElementById('noBtn');
+            
+            const maxX = container.clientWidth - btn.offsetWidth - 80;
+            const maxY = container.clientHeight - btn.offsetHeight - 200;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            return { x: randomX, y: randomY };
+        }
+
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const pos = getRandomPosition();
+            
+            btn.style.position = 'absolute';
+            btn.style.left = pos.x + 'px';
+            btn.style.top = pos.y + 'px';
+        }
+
+        function goToStep2() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function handleNumber(num) {
+            if (num < 3) {
+                moveNumberButton(num);
+            } else {
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step3').classList.remove('hidden');
+            }
+        }
+
+        function moveNumberButton(num) {
+            const btn = document.getElementById('btn' + num);
+            const buttons = document.querySelector('#step2 .buttons');
+            
+            const maxX = buttons.clientWidth - btn.offsetWidth - 20;
+            const maxY = 100;
+            
+            const randomX = Math.random() * maxX - 100;
+            const randomY = (Math.random() * maxY) - 50;
+            
+            btn.style.position = 'relative';
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+    </script>
+</body>
+</html>
